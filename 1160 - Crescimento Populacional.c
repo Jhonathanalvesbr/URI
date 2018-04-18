@@ -14,8 +14,8 @@ int main ()
 		
 		while(populacaoA <= polulacaoB)
 		{
-			populacaoA = populacaoA+((populacaoA*taxacrescimentoA)/100.00);
-			polulacaoB = polulacaoB+((polulacaoB*taxacrescimentoB)/100.00);
+			populacaoA = populacaoA + ( ( populacaoA * taxacrescimentoA ) / 100.00 );
+			polulacaoB = polulacaoB + ( ( polulacaoB * taxacrescimentoB ) / 100.00 );
 			if(anos > 100)
 			{
 				break;
