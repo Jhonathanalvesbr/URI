@@ -28,6 +28,7 @@ ported for sparkfun esp32
 #include <WiFi.h>
 
 int led = 2;
+bool flag = true;
 const char* ssid     = "Jhonathan Alves";
 const char* password = "JaC58246";
 
@@ -69,12 +70,12 @@ void loop(){
  WiFiClient client = server.available();   // listen for incoming clients
 
   if (client) {                             // if you get a client,
-    Serial.println("New Client.");           // print a message out the serial port
+    //Serial.println("New Client.");           // print a message out the serial port
     String currentLine = "";                // make a String to hold incoming data from the client
     while (client.connected()) {            // loop while the client's connected
       if (client.available()) {             // if there's bytes to read from the client,
         char c = client.read();             // read a byte, then
-        Serial.write(c);                    // print it out the serial monitor
+        //Serial.write(c);                    // print it out the serial monitor
         if (c == '\n') {                    // if the byte is a newline character
 
           // if the current line is blank, you got two newline characters in a row.
@@ -83,30 +84,44 @@ void loop(){
             // HTTP headers always start with a response code (e.g. HTTP/1.1 200 OK)
             // and a content-type so the client knows what's coming, then a blank line:
 
-client.println("<html>");
-client.println("<!DOCTYPE html>");
-client.println("<head>");
-client.println("  <meta charset='utf-8' />");
-client.println(" <title>CSS3 Buttons</title>");
-client.println("    <META NAME='ROBOTS' CONTENT='NOINDEX, NOFOLLOW'>");
-client.println(" <link rel='stylesheet' href='https://assets.hongkiat.com/uploads/css3-on-off-button/demo/style2.css'>");
-client.println(" <script type='text/javascript' src='https://assets.hongkiat.com/uploads/css3-on-off-button/demo/js/jquery-1.7.2.min.js'></script>");
-client.println(" <script type='text/javascript'>");
-client.println(" let flag = '/L';");
-client.println("   $(document).ready(function(){");
-client.println("     $('#button').on('click', function(){");
-client.println("       $(this).toggleClass('on'); if(flag == '/L'){flag='/H'} else{flag='/L'};");
-client.println("     });");
-client.println("   });");
-client.println(" </script>");
-client.println("</head>");
-client.println("<body>");
-client.println(" <section>");
-client.println("   <a href='<?php echo $flag; ?>' id='button'>&#xF011;</a>");
-client.println("   <span></span>");
-client.println(" </section>");
-client.println("</body>");
-client.println("</html>");
+  client.println("<html>");
+  client.println("<!DOCTYPE html>");
+  client.println("<head>");
+  client.println("  <meta charset='utf-8' />");
+  client.println(" <title>CSS3 Buttons</title>");
+  client.println("    <META NAME='ROBOTS' CONTENT='NOINDEX, NOFOLLOW'>");
+  client.println(" <link rel='stylesheet' href='https://assets.hongkiat.com/uploads/css3-on-off-button/demo/style2.css'>");
+  client.println(" <script type='text/javascript' src='https://assets.hongkiat.com/uploads/css3-on-off-button/demo/js/jquery-1.7.2.min.js'></script>");
+  client.println(" <script type='text/javascript'>");
+  client.println("   $(document).ready(function(){");
+  if(flag == true)
+  {
+    client.println("     $('#button').on('click', function(){");
+    client.println("       $(this).toggleClass('on');");
+    client.println("     });");
+  }
+  else
+  {
+    client.println("       $('#button').toggleClass('on');");
+  }
+  client.println("   });");
+  client.println(" </script>");
+  client.println("</head>");
+  client.println("<body>");
+  if(flag == true)
+  {
+    client.print("<center><h1><FONT COLOR='#FF0000'>Desligado</h1></FONT></center>");  
+  }
+  else
+  {
+    client.print("<center><h1><FONT COLOR='#FF0000'>Ligado</h1></FONT></center>");
+  }
+  client.println(" <section>");
+  client.println("   <a href='led' id='button'>&#xF011;</a>");
+  client.println("   <span></span>");
+  client.println(" </section>");
+  client.println("</body>");
+  client.println("</html>");
             
             
             
@@ -119,16 +134,22 @@ client.println("</html>");
         }
 
         // Check to see if the client request was "GET /H" or "GET /L":
-        if (currentLine.endsWith("GET /H")) {
-          digitalWrite(led, HIGH);               // GET /H turns the LED on
-        }
-        if (currentLine.endsWith("GET /L")) {
-          digitalWrite(led, LOW);                // GET /L turns the LED off
+        if (currentLine.endsWith("GET /led")) {
+          if(flag == true)
+          {
+            digitalWrite(led, HIGH); 
+            flag = false;
+          }
+          else
+          {
+            digitalWrite(led, LOW);   
+            flag = true;
+          }
         }
       }
     }
     // close the connection:
     client.stop();
-    Serial.println("Client Disconnected.");
+    //Serial.println("Client Disconnected.");
   }
 }
