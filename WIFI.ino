@@ -28,9 +28,14 @@ ported for sparkfun esp32
 #include <WiFi.h>
 
 int led = 2;
+int pagina = 0;
 bool flag = true;
 const char* ssid     = "Jhonathan Alves";
 const char* password = "JaC58246";
+
+
+
+
 
 WiFiServer server(80);
 
@@ -66,24 +71,40 @@ void setup()
 
 int value = 0;
 
-void loop(){
- WiFiClient client = server.available();   // listen for incoming clients
 
-  if (client) {                             // if you get a client,
-    //Serial.println("New Client.");           // print a message out the serial port
-    String currentLine = "";                // make a String to hold incoming data from the client
-    while (client.connected()) {            // loop while the client's connected
-      if (client.available()) {             // if there's bytes to read from the client,
-        char c = client.read();             // read a byte, then
-        //Serial.write(c);                    // print it out the serial monitor
-        if (c == '\n') {                    // if the byte is a newline character
 
-          // if the current line is blank, you got two newline characters in a row.
-          // that's the end of the client HTTP request, so send a response:
-          if (currentLine.length() == 0) {
-            // HTTP headers always start with a response code (e.g. HTTP/1.1 200 OK)
-            // and a content-type so the client knows what's coming, then a blank line:
 
+void paginamain(WiFiClient client)
+{
+client.println("<!DOCTYPE html>");
+client.println("<html >");
+client.println("<head>");
+client.println("  <meta charset='UTF-8'>");
+client.println("  <title>Button hover effects with box-shadow</title>");
+client.println("  <link href='https://fonts.googleapis.com/css?family=Fira+Sans:300' rel='stylesheet'>");
+client.println("  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css'>");
+client.println("      <link rel='stylesheet' href='https://cdn.rawgit.com/Jhonathanalvesbr/URI/master/style.css'>");
+client.println("</head>");
+client.println("<body>");
+client.println("  <div class='buttons'>");
+client.println("  <h1><code>I</code>o</h1><code>T</code>");
+client.println("  <a href='/paginaled'><button class='fill'>Leds</button></a>");
+client.println("  <button class='pulse'>Pulse</button>");
+client.println("  <button class='close'>Close</button>");
+client.println("  <button class='raise'>Raise</button>");
+client.println("  <button class='up'>Fill Up</button>");
+client.println("  <button class='slide'>Slide</button>");
+client.println("  <button class='offset'>Offset</button>");
+client.println("</div>");
+client.println("");
+client.println("");
+client.println("</body>");
+client.println("</html>");
+
+}
+
+void paginaled(WiFiClient client)
+{
   client.println("<html>");
   client.println("<!DOCTYPE html>");
   client.println("<head>");
@@ -120,9 +141,41 @@ void loop(){
   client.println("   <a href='led' id='button'>&#xF011;</a>");
   client.println("   <span></span>");
   client.println(" </section>");
+  client.println(" <div align='right'><br /><br /><br />");
+  client.println("<h2><FONT COLOR='#1E90FF'>Voltar <a href='back'></a></h2><br>");
+  client.println(" </div>");
   client.println("</body>");
   client.println("</html>");
-            
+}
+
+
+
+void loop(){
+ WiFiClient client = server.available();   // listen for incoming clients
+
+  if (client) {                             // if you get a client,
+    //Serial.println("New Client.");           // print a message out the serial port
+    String currentLine = "";                // make a String to hold incoming data from the client
+    while (client.connected()) {            // loop while the client's connected
+      if (client.available()) {             // if there's bytes to read from the client,
+        char c = client.read();             // read a byte, then
+        //Serial.write(c);                    // print it out the serial monitor
+        if (c == '\n') {                    // if the byte is a newline character
+
+          // if the current line is blank, you got two newline characters in a row.
+          // that's the end of the client HTTP request, so send a response:
+          if (currentLine.length() == 0) {
+            // HTTP headers always start with a response code (e.g. HTTP/1.1 200 OK)
+            // and a content-type so the client knows what's coming, then a blank line:
+
+          if(pagina == 0)
+          {
+            paginamain(client);
+          }
+          else
+          {
+            paginaled(client); 
+          }
             
             
             break;
@@ -145,6 +198,14 @@ void loop(){
             digitalWrite(led, LOW);   
             flag = true;
           }
+        }
+        else if (currentLine.endsWith("GET /paginaled"))
+        {
+          pagina = 1;
+        }
+        else if (currentLine.endsWith("GET /back"))
+        {
+          pagina = 0;
         }
       }
     }
