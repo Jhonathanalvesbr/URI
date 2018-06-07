@@ -5,7 +5,6 @@
 int main()
 {
 	char dna[101] = "", bacteria[101] = "";
-	int flag = 0, x = 0, i = 0;
 	
 	while(gets(bacteria) != NULL)
 	{
