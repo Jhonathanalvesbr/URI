@@ -49,12 +49,12 @@ int main()
 			x++;
 		}
 		
-		if(x%2 == 0 && flag == 1)
+		if(x%2 == 0 && flag == 1) //Guarda chuva em casa
 		{
 			flag = 0;
 			guardaChuvaCasa++;
 		}
-		else if(x%2 != 0 && flag == 1)
+		else if(x%2 != 0 && flag == 1) //Guarda chuva trabalho
 		{
 			flag = 0;
 			guardaChuvaTrabalho++;
