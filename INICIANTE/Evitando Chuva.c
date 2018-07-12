@@ -4,8 +4,8 @@
 
 int main()
 {
-	char previsao[1000][6];
-	int loop, x = 0, chuvaIrTrabalho = 0, chuvaIrCasa = 0, flag = 0, topo = 0;
+	char previsao[2000][6];
+	int loop, x = 0, guardaChuvaTrabalho = 0, guardaChuvaCasa = 0, flag = 0, topo = 0, compraCasa = 0, compraTrabalho = 0;
 	
 	scanf("%d", &loop);
 	
@@ -18,35 +18,50 @@ int main()
 	
 	for(x = 0; x < topo; x++)
 	{
-		flag = 0;
-		
-		if(x%2 == 0)
+		while(strcmp(previsao[x], "chuva") == 0 && x < topo)
 		{
-			while(strcmp(previsao[x], "chuva") == 0)
+			if(flag == 0)
 			{
-				if(flag == 0)
+				if(x%2 == 0)//Chuva para o trabalho
 				{
-					flag = 1;
-					chuvaIrTrabalho++;
+					if(guardaChuvaCasa == 0)
+					{
+						compraTrabalho++;
+					}
+					else if(guardaChuvaCasa > 0)
+					{
+						guardaChuvaCasa--;
+					}
 				}
-				x++;
+				else //Chuva para a casa
+				{
+					if(guardaChuvaTrabalho == 0)
+					{
+						compraCasa++;
+					}
+					else if(guardaChuvaTrabalho > 0)
+					{
+						guardaChuvaTrabalho--;
+					}
+				}
 			}
+			flag = 1;
+			x++;
 		}
-		else
+		
+		if(x%2 == 0 && flag == 1)
 		{
-			while(strcmp(previsao[x], "chuva") == 0)
-			{
-				if(flag == 0)
-				{
-					flag = 1;
-					chuvaIrCasa++;
-				}
-				x++;
-			}
+			flag = 0;
+			guardaChuvaCasa++;
+		}
+		else if(x%2 != 0 && flag == 1)
+		{
+			flag = 0;
+			guardaChuvaTrabalho++;
 		}
 	}
 	
-	printf("%i %i\n", chuvaIrTrabalho, chuvaIrCasa);
+	printf("%i %i\n", compraTrabalho, compraCasa);
 	
 	return 0;
 }
